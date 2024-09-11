@@ -1,0 +1,87 @@
+{% extends "base.html" %}
+
+{% block title %}Upload File{% endblock %}
+
+{% block content %}
+<div class="container mx-auto p-4">
+    <h1 class="text-2xl font-bold mb-4">Upload File</h1>
+
+    <!-- Form -->
+    <form id="upload-form" action="{{ url_for('views.handle_upload') }}" method="POST" enctype="multipart/form-data">
+        <input type="file" name="file" id="file-input" class="mb-4 p-2 border rounded" />
+        <textarea name="description" id="description-input"
+            placeholder="Enter smart search tags, this will help to search and retrieve the file..."
+            class="mb-4 p-3 border border-gray-300 rounded-lg w-full h-24 resize-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+            style="color: black;"></textarea>
+
+        <!-- Destination Folder Dropdown -->
+        <div class="relative mb-4">
+            <select name="folder" id="folder-input"
+                class="appearance-none bg-blue-700 text-white border border-blue-800 rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-blue-400">
+                <option value="shared">Shared</option>
+                <option value="archived">Archived</option>
+                <option value="backup">Backup</option>
+            </select>
+            <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                </svg>
+            </div>
+        </div>
+
+        <button type="submit" class="bg-blue-600 p-2 rounded">Upload</button>
+    </form>
+
+    <!-- Progress Bar -->
+    <div id="progress-container" class="mt-4">
+        <progress id="progress-bar" value="0" max="100" class="w-full bg-gray-800"></progress>
+        <div id="progress-message" class="mt-2"></div>
+    </div>
+
+    <!-- File List -->
+    <div id="file-list-container" class="bg-gray-900 p-4 rounded shadow-md mt-4">
+        <!-- Header Row -->
+        <div class="grid grid-cols-5 gap-4 text-gray-300 font-semibold mb-2 border-b border-gray-700 pb-2">
+            <span class="col-span-1 truncate">Name</span>
+            <span class="col-span-1 truncate">Owner</span>
+            <span class="col-span-1 truncate">Uploaded Date</span>
+            <span class="col-span-1 truncate">Description</span>
+            <span class="col-span-1 truncate">Actions</span>
+        </div>
+        <!-- File Items -->
+        <div id="file-items-container" class="space-y-2">
+            <!-- File items will be dynamically inserted here -->
+        </div>
+    </div>
+</div>
+
+<!-- Option Box for Description/edit/share/delete -->
+<div id="options-menu-container">
+    <div id="option-box" class="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-75 hidden">
+        <div class="bg-gray-900 p-6 rounded-lg shadow-lg w-80">
+            <h2 class="text-xl font-bold mb-4">File Options</h2>
+            <button id="option-add-description"
+                class="block w-full text-left px-4 py-2 text-blue-600 hover:bg-blue-800 rounded mb-2">Add smart search
+                tag</button>
+            <button id="option-edit-description"
+                class="block w-full text-left px-4 py-2 text-blue-600 hover:bg-blue-800 rounded mb-2">Edit smart search
+                tag</button>
+            <button id="option-share"
+                class="block w-full text-left px-4 py-2 text-blue-600 hover:bg-blue-800 rounded mb-2">Share</button>
+            <button id="option-delete"
+                class="block w-full text-left px-4 py-2 text-red-600 hover:bg-red-800 rounded mb-2">Delete</button>
+            <button id="option-analyze"
+                class="block w-full text-left px-4 py-2 text-green-600 hover:bg-green-800 rounded mb-2">Analyze with
+                AI</button>
+            <button id="option-cancel"
+                class="block w-full text-left px-4 py-2 text-gray-600 hover:bg-gray-800 rounded">Cancel</button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<!-- Include the upload.js script -->
+<script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+{% endblock %}

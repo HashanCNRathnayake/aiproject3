@@ -1,0 +1,142 @@
+{% extends "base.html" %}
+
+{% block title %}AI Chat Page{% endblock %}
+
+{% block content %}
+
+<div class="flex-1 flex flex-col">
+    <!-- Your div content area -->
+    <div class="flex-1 p-6 bg-gray-800 overflow-y-auto">
+        <div class="">
+        </div>
+
+        <div class="flex justify-around mb-6">
+            <a href="{{url_for('gpt.aiChat')}}" class="bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 px-4 rounded">
+                Ask About Anything
+            </a>
+            <a href="{{url_for('gpt.aiChat')}}" class="bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 px-4 rounded">
+                Personal Mental Health Adviser
+            </a>
+            <a href="{{url_for('gpt.aiChat')}}" class="bg-gray-200 hover:bg-gray-300 text-gray-800 py-2 px-4 rounded">
+                AI Agent 3
+            </a>
+        </div>
+    </div>
+
+    <!-- Chat Section -->
+    <div id="chat-log" class="chat-log ">
+    </div>
+
+    <!-- Input Bar Fixed at the Bottom of the div Content -->
+    <form id="chat-form" method="post">
+
+        <div class="bg-gray-800 p-4 flex items-center">
+
+            <input type="text" placeholder="Type your message..." id="user-input"
+                class="flex-1 py-2 px-4 rounded-l bg-gray-100 text-gray-900">
+            <div class="p-4">
+                <button class="flex items-center justify-center text-gray-400 hover:text-gray-600">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13">
+                        </path>
+                    </svg>
+                </button>
+
+            </div>
+            <button type="submit" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded ml-2">
+                Send
+            </button>
+        </div>
+    </form>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <script>
+        document.getElementById('chat-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            let userInput = document.getElementById('user-input').value;
+            console.log("User Input:", userInput);  // Check user input value
+
+            if (userInput.trim() !== "") {
+                displayMessage(userInput, 'user');
+
+                fetch('/gpt/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ message: userInput })
+                })
+                    .then(response => {
+                        console.log("Fetch response status:", response.status);  // Check response status
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log("Server response:", data);  // Check the server response
+                        displayMessage(data.response, 'bot');
+                        displayMessage(data.citation_text, 'cite');
+                    })
+                    .catch(error => console.error('Error:', error));
+
+                document.getElementById('user-input').value = '';
+            }
+        });
+
+        // function displayMessage(message, sender) {
+        //     let chatLog = document.getElementById("chat-log");
+        //     let messageDiv = document.createElement("div");
+        //     messageDiv.className = sender + " p-4 m-3 text-white";
+        //     // Use innerHTML to render HTML content
+        //     messageDiv.innerHTML = message;
+        //     chatLog.appendChild(messageDiv);
+        //     chatLog.scrollTop = chatLog.scrollHeight;
+        // }
+
+
+        function displayMessage(message, sender) {
+            let chatLog = document.getElementById("chat-log");
+            let messageContainer = document.createElement("div");
+            let messageDiv = document.createElement("div");
+            let imgDiv = document.createElement("div");
+            let img = document.createElement("img");
+
+            // Set up the image based on the sender
+            if (sender === "user") {
+                img.src = "{{url_for('static', filename='user.png')}}"; // Replace with the actual path to the user image
+                img.className = "user-img w-8 h-8 rounded-full";
+                messageContainer.className = "flex items-center justify-end m-3";
+                messageDiv.className = "user-message p-4 bg-blue-500 text-white rounded-lg";
+            } else if (sender === "bot") {
+                img.src = "{{url_for('static', filename='gpt_logo.png')}}"; // Replace with the actual path to the bot image
+                img.className = "bot-img w-9";
+                messageContainer.className = "flex items-start justify-end m-3";
+                messageDiv.className = "bot-message p-4 bg-gray-700 text-white rounded-lg";
+            }
+
+            // Set up the image div and message div
+            imgDiv.appendChild(img);
+            messageDiv.innerHTML = message;
+
+            // Append image and message to the container
+            if (sender === "user") {
+                messageContainer.appendChild(messageDiv);
+                messageContainer.appendChild(imgDiv);
+            } else {
+                messageContainer.appendChild(messageDiv);
+                messageContainer.appendChild(imgDiv);
+
+            }
+
+            // Add the message container to the chat log
+            chatLog.appendChild(messageContainer);
+            chatLog.scrollTop = chatLog.scrollHeight;
+        }
+
+
+    </script>
+
+
+</div>
+{% endblock %}

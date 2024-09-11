@@ -1,0 +1,120 @@
+{% extends "base.html" %}
+
+{% block title %}AI Chat Page{% endblock %}
+
+{% block content %}
+
+<div id="chat-container">
+    <h2 class="text-center mt-4 font-extrabold">AI Chat</h2>
+
+    <div id="chat-log" class="chat-log">
+        <!-- <div>
+            <div class="chat_img">
+                <img src="{{url_for('static', filename='user.png')}}" alt="">
+            </div>
+        </div>
+        <div class="user ">
+            <p>What is hashan's strenths?</p>
+        </div>
+        <div class="Bot">
+            <p>Determination. He will win. never give up. work hard as much as can. never stop. untill you archieve
+                everything you want. help others while you can also do some religious activities.</p>
+        </div> -->
+        <!-- Chat messages will be displayed here -->
+    </div>
+    <form id="chat-form" method="post">
+        <div class="flex flex-row bg-blue-700 p-5 border rounded-md">
+
+            <input class="text-black p-2 w-full mr-3 flex-1" type="text" id="user-input"
+                placeholder="Type your message here..." required>
+            <button class="bg-blue-500  hover:border border-white rounded-lg px-5 font-bold" type="submit">Send</button>
+        </div>
+    </form>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+    <script>
+        document.getElementById('chat-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            let userInput = document.getElementById('user-input').value;
+            console.log("User Input:", userInput);  // Check user input value
+
+            if (userInput.trim() !== "") {
+                displayMessage(userInput, 'user');
+
+                fetch('/gpt/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ message: userInput })
+                })
+                    .then(response => {
+                        console.log("Fetch response status:", response.status);  // Check response status
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log("Server response:", data);  // Check the server response
+                        displayMessage(data.response, 'bot');
+                        displayMessage(data.citation_text, 'cite');
+                    })
+                    .catch(error => console.error('Error:', error));
+
+                document.getElementById('user-input').value = '';
+            }
+        });
+
+        // function displayMessage(message, sender) {
+        //     let chatLog = document.getElementById("chat-log");
+        //     let messageDiv = document.createElement("div");
+        //     messageDiv.className = sender + " p-4 m-3 text-white";
+        //     // Use innerHTML to render HTML content
+        //     messageDiv.innerHTML = message;
+        //     chatLog.appendChild(messageDiv);
+        //     chatLog.scrollTop = chatLog.scrollHeight;
+        // }
+
+
+        function displayMessage(message, sender) {
+            let chatLog = document.getElementById("chat-log");
+            let messageContainer = document.createElement("div");
+            let messageDiv = document.createElement("div");
+            let imgDiv = document.createElement("div");
+            let img = document.createElement("img");
+
+            // Set up the image based on the sender
+            if (sender === "user") {
+                img.src = "{{url_for('static', filename='user.png')}}"; // Replace with the actual path to the user image
+                img.className = "user-img w-8 h-8 rounded-full";
+                messageContainer.className = "flex items-center justify-end m-3";
+                messageDiv.className = "user-message p-4 bg-blue-500 text-white rounded-lg";
+            } else if (sender === "bot") {
+                img.src = "{{url_for('static', filename='gpt_logo.png')}}"; // Replace with the actual path to the bot image
+                img.className = "bot-img w-8 rounded-full";
+                messageContainer.className = "flex items-start justify-end m-3";
+                messageDiv.className = "bot-message p-4 bg-gray-500 text-white rounded-lg";
+            }
+
+            // Set up the image div and message div
+            imgDiv.appendChild(img);
+            messageDiv.innerHTML = message;
+
+            // Append image and message to the container
+            if (sender === "user") {
+                messageContainer.appendChild(messageDiv);
+                messageContainer.appendChild(imgDiv);
+            } else {
+                messageContainer.appendChild(messageDiv);
+                messageContainer.appendChild(imgDiv);
+
+            }
+
+            // Add the message container to the chat log
+            chatLog.appendChild(messageContainer);
+            chatLog.scrollTop = chatLog.scrollHeight;
+        }
+
+
+    </script>
+</div>
+{% endblock %}

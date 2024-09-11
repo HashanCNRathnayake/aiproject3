@@ -1,0 +1,262 @@
+{% extends "base.html" %}
+
+{% block title %}Chat Page{% endblock %}
+
+{% block content %}
+
+<div class="flex flex-col flex-auto h-full p-6 text-black">
+    <div class="flex flex-col flex-auto flex-shrink-0 p-4">
+        <div class="flex flex-col overflow-x-auto mb-4">
+            <div class="flex flex-col">
+                <div class="">
+                    <h1 class="text-center font-semibold text-white size-20">Chat Page</h1>
+
+                    {{ dropzone.create(url_for('gpt.upload'))}}
+
+                    <div class="bg-gray-800 h-screen flex flex-col justify-between">
+                        <!-- Top Section with Boxes -->
+                        <div class="grid grid-cols-3 gap-3 p-4">
+                            <!-- AI Agent Boxes -->
+                            <a href="{{url_for('gpt.aiChat')}}" class="bg-white shadow-lg rounded-lg p-4">
+                                <span class="text-gray-500">Ask About Anything</span>
+                            </a>
+                            <a href="#" class="bg-white shadow-lg rounded-lg p-4">
+                                <span class="text-gray-500">Personal Mental Health Adviser</span>
+                            </a>
+                            <a href="#" class="bg-white shadow-lg rounded-lg p-4">
+                                <span class="text-gray-500">AI Agent 3</span>
+                            </a>
+                        </div>
+
+                        <!-- Chat Section -->
+                        <div id="chat-log" class="chat-log">
+
+                            <!-- <div class="bot-message p-4 bg-gray-700 text-white rounded-lg">
+                                hi
+                            </div> -->
+
+
+                        </div>
+
+                        <!-- <div id="chat-box" class="flex-1 p-4 overflow-y-auto text-white">
+                        </div> -->
+
+                        <!-- Input Section -->
+                        <!-- <div class="p-4 bg-gray-800 text-black shadow-md flex">
+                            <input id="message-input" type="text"
+                                class="flex-1 border border-gray-800 rounded-lg p-2 mr-2 text-white bg-gray-700"
+                                placeholder="Type a message...">
+                            <button id="voice-input-btn"
+                                class="bg-gray-200 text-black px-4 py-2 rounded-lg mr-2">🎤</button>
+                            <button id="attach-btn" class="bg-gray-200 text-black px-4 py-2 rounded-lg mr-2">📎</button>
+                            <button id="send-btn" class="bg-blue-500 text-white px-4 py-2 rounded-lg">Send</button>
+                        </div>
+
+                        <script>
+                            document.getElementById('send-btn').addEventListener('click', function () {
+                                const message = document.getElementById('message-input').value.trim();
+
+                                if (message) {
+                                    addUserMessage(message);
+                                    // Clear the input field
+                                    document.getElementById('message-input').value = '';
+
+                                    // Determine the response based on the user's input
+                                    let response = '';
+                                    if (message.toLowerCase() === 'what is kunway enterprises?') {
+                                        response = 'Kunway Enterprises is a Malaysian company that began in the agricultural sector and has grown into a multifaceted conglomerate. Their activities include the production and export of high-quality agricultural products such as durians, bird nests, and palm oil. They also offer shared management services, IT solutions, and investment opportunities.';
+                                    } else if (message.toLowerCase() === 'what services does kunway enterprises offer?') {
+                                        response = 'Kunway Enterprises offers services including shared management, IT solutions, and investment opportunities.';
+                                    } else if (message.toLowerCase() === 'where is kunway enterprises located?') {
+                                        response = 'Kunway Enterprises is based in Malaysia.';
+                                    } else {
+                                        response = 'I am not sure how to respond to that. Can you please rephrase your question?';
+                                    }
+
+                                    // Add a 3-second delay before showing the response
+                                    setTimeout(() => {
+                                        addChatResponse(response);
+                                    }, 3000); // 3000 milliseconds = 3 seconds
+                                }
+                            });
+
+                            function addUserMessage(message) {
+                                const chatBox = document.getElementById('chat-box');
+                                const userMessageDiv = document.createElement('div');
+                                userMessageDiv.classList.add('bg-blue-500', 'text-white', 'p-4', 'rounded-lg', 'mb-2', 'self-start', 'max-w');
+                                userMessageDiv.textContent = message;
+                                chatBox.appendChild(userMessageDiv);
+                                chatBox.scrollTop = chatBox.scrollHeight;
+                            }
+
+                            function addChatResponse(response) {
+                                const chatBox = document.getElementById('chat-box');
+                                const responseDiv = document.createElement('div');
+                                responseDiv.classList.add('bg-gray-200', 'text-black', 'p-4', 'rounded-lg', 'mb-2', 'self-end', 'max-w');
+                                responseDiv.textContent = response;
+                                chatBox.appendChild(responseDiv);
+                                chatBox.scrollTop = chatBox.scrollHeight;
+                            }
+                        </script>
+                    </div>
+ -->
+
+                    </div>
+                </div>
+            </div>
+            <div class="">
+                <form id="chat-form" method="post">
+
+                    <div class="flex flex-row items-center h-16 rounded-xl bg-white w-full px-4">
+
+                        <!-- start -->
+
+
+
+
+
+                        <!-- end  -->
+
+                        <!-- clip button  -->
+                        <div>
+                            <button class="flex items-center justify-center text-gray-400 hover:text-gray-600">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13">
+                                    </path>
+                                </svg>
+                            </button>
+                        </div>
+
+                        <!-- input  -->
+                        <div class="flex-grow ml-4">
+                            <div class="relative w-full">
+
+                                <input type="text" id="user-input" required
+                                    placeholder="Analyze Your Documents, Ask Questions..."
+                                    class="flex w-full border rounded-xl focus:outline-none focus:border-indigo-300 pl-4 h-10 ">
+                                <!-- <button
+                                class="absolute flex items-center justify-center h-full w-12 right-0 top-0 text-gray-400 hover:text-gray-600">
+                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                        d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z">
+                                    </path>
+                                </svg>
+                            </button> -->
+                            </div>
+                        </div>
+
+                        <!-- send button  -->
+                        <div class="ml-4">
+                            <button type="submit"
+                                class="flex items-center justify-center bg-indigo-500 hover:bg-indigo-600 rounded-xl text-white px-4 py-2 flex-shrink-0">
+                                <span>Send</span>
+                                <span class="ml-2">
+                                    <svg class="w-5 h-5 transform rotate-45 -mt-px" fill="none" stroke="currentColor"
+                                        viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                            d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
+                                    </svg>
+                                </span>
+                            </button>
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+
+
+            <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+            <script>
+                document.getElementById('chat-form').addEventListener('submit', function (event) {
+                    event.preventDefault();
+
+                    let userInput = document.getElementById('user-input').value;
+                    console.log("User Input:", userInput);  // Check user input value
+
+                    if (userInput.trim() !== "") {
+                        displayMessage(userInput, 'user');
+
+                        fetch('/gpt/chat', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({ message: userInput })
+                        })
+                            .then(response => {
+                                console.log("Fetch response status:", response.status);  // Check response status
+                                return response.json();
+                            })
+                            .then(data => {
+                                console.log("Server response:", data);  // Check the server response
+                                displayMessage(data.response, 'bot');
+                                displayMessage(data.citation_text, 'cite');
+                            })
+                            .catch(error => console.error('Error:', error));
+
+                        document.getElementById('user-input').value = '';
+                    }
+                });
+
+                // function displayMessage(message, sender) {
+                //     let chatLog = document.getElementById("chat-log");
+                //     let messageDiv = document.createElement("div");
+                //     messageDiv.className = sender + " p-4 m-3 text-white";
+                //     // Use innerHTML to render HTML content
+                //     messageDiv.innerHTML = message;
+                //     chatLog.appendChild(messageDiv);
+                //     chatLog.scrollTop = chatLog.scrollHeight;
+                // }
+
+
+                function displayMessage(message, sender) {
+                    let chatLog = document.getElementById("chat-log");
+                    let messageContainer = document.createElement("div");
+                    let messageDiv = document.createElement("div");
+                    let imgDiv = document.createElement("div");
+                    let img = document.createElement("img");
+
+                    // Set up the image based on the sender
+                    if (sender === "user") {
+                        img.src = "{{url_for('static', filename='user.png')}}"; // Replace with the actual path to the user image
+                        img.className = "user-img w-8 h-8 rounded-full";
+                        messageContainer.className = "flex items-center justify-end m-3";
+                        messageDiv.className = "user-message p-4 bg-blue-500 text-white rounded-lg";
+                    } else if (sender === "bot") {
+                        img.src = "{{url_for('static', filename='gpt_logo.png')}}"; // Replace with the actual path to the bot image
+                        img.className = "bot-img w-9";
+                        messageContainer.className = "flex items-start justify-end m-3";
+                        messageDiv.className = "bot-message p-4 bg-gray-700 text-white rounded-lg";
+                    }
+
+                    // Set up the image div and message div
+                    imgDiv.appendChild(img);
+                    messageDiv.innerHTML = message;
+
+                    // Append image and message to the container
+                    if (sender === "user") {
+                        messageContainer.appendChild(messageDiv);
+                        messageContainer.appendChild(imgDiv);
+                    } else {
+                        messageContainer.appendChild(messageDiv);
+                        messageContainer.appendChild(imgDiv);
+
+                    }
+
+                    // Add the message container to the chat log
+                    chatLog.appendChild(messageContainer);
+                    chatLog.scrollTop = chatLog.scrollHeight;
+                }
+
+
+            </script>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}

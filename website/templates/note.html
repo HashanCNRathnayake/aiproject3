@@ -1,0 +1,37 @@
+{% extends "base.html" %} {% block title %}KunWay-GPT Note{% endblock %} {% block content
+%}
+
+<h1>Notes</h1>
+<ul class="list-group list-group-flush" id="notes">
+  {% for note in user.notes %}
+  <li class="list-group-item">
+    {{ note.data | replace('\n', '<br>') | safe }}
+    <button type="button" class="close" onClick="deleteNote({{ note.id }})">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </li>
+  {% endfor %}
+</ul>
+<form id="add_note" method="POST">
+  <textarea name="note" id="note" class="form-control"></textarea>
+  <br />
+  <div>
+    <button type="submit" class="btn btn-primary">Add Note</button>
+  </div>
+</form>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const form = document.getElementById("add_note");
+    const textarea = document.getElementById("note");
+
+    textarea.addEventListener("keydown", function (event) {
+      if (event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault(); // Prevent the default action of adding a newline
+        form.submit(); // Submit the form
+      }
+    });
+  });
+</script>
+
+{% endblock %}

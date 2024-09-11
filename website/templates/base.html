@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    crossorigin="anonymous" />
+
+  <title>{% block title %}KUNWAY{% endblock %}</title>
+  <link rel="icon" type="image/png" href="{{ url_for('static', filename='kw_logo.png') }}">
+
+  {{ dropzone.load_css()}}
+  {{ dropzone.style('color:black; margin: 10px; min—height:200px; padding:5px !important;')}}
+
+
+</head>
+
+<body class=" bg-gray-800 font-sans text-white">
+  <div class="flex flex-col h-screen bg-gray-800 font-sans text-white">
+
+    <nav class="bg-gray-800 p-4">
+      <div class="container mx-auto flex justify-between items-center">
+        <div class="text-white text-lg font-bold">Kunway</div>
+        <div class="hidden md:flex space-x-4">
+          <a class="text-white" id="home" href="/">Home</a>
+          <a class="text-white" id="home" href="/">Features</a>
+          <a class="text-white" id="home" href="/">About Us</a>
+          <a class="text-white" id="home" href="/">Help & Support</a>
+
+          {% if user.is_authenticated %}
+          <a class="text-white" id="logout" href="/auth/logout">Logout</a>
+          {% else %}
+          <a class="text-white" id="login" href="/auth/login">Login</a>
+          <a class="text-white" id="signUp" href="/auth/sign-up">Sign Up</a>
+          {% endif %}
+          <div class="md:hidden">
+            <button id="menu-button" class="text-white focus:outline-none">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+              </svg>
+            </button>
+          </div>
+        </div>
+        <div id="mobile-menu" class="hidden md:hidden">
+          <a class="block px-4 py-2 text-sm text-white" id="home" href="/">Home</a>
+          <a class="block px-4 py-2 text-sm text-white" id="home" href="/">Features</a>
+          <a class="block px-4 py-2 text-sm text-white" id="home" href="/">About Us</a>
+          <a class="block px-4 py-2 text-sm text-white" id="home" href="/">Help & Support</a>
+
+          {% if user.is_authenticated %}
+          <a class="block px-4 py-2 text-sm text-white" id="logout" href="/auth/logout">Logout</a>
+          {% else %}
+          <a class="block px-4 py-2 text-sm text-white" id="login" href="/auth/login">Login</a>
+          <a class="block px-4 py-2 text-sm text-white" id="signUp" href="/auth/sign-up">Sign Up</a>
+          {% endif %}
+        </div>
+    </nav>
+
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if
+    messages %} {% for category, message in messages %} {% if category ==
+    'error' %}
+
+    <div class="alert alert-danger alter-dismissable fade show" role="alert">
+      {{ message }}
+      <!-- <button type="button" class="close" data-dismiss="alert">
+        <span aria-hidden="true">&times;</span>
+      </button> -->
+    </div>
+
+    {% else %}
+    <div class="alert alert-success alter-dismissable fade show" role="alert">
+      {{ message }}
+      <!-- <button type="button" class="close" data-dismiss="alert">
+        <span aria-hidden="true">&times;</span>
+      </button> -->
+    </div>
+    {% endif %} {% endfor %} {% endif %} {% endwith %}
+
+    <div class="flex flex-1">
+      <!-- Sticky Sidebar -->
+      {% if user.is_authenticated %}
+      <aside class="w-64 bg-gray-900 text-white p-4 shadow-lg sticky top-16 flex flex-col">
+        <a href="{{ url_for('views.upload_page') }}">
+          <button id="uploadButton" class="bg-blue-500 text-white py-2 px-4 rounded mb-4">Upload</button>
+        </a>
+        <ul class="space-y-4 flex-1">
+          <li><a href="{{ url_for('views.dashboard_view') }}" class="hover:underline">Go to Dashboard</a></li>
+          <li><a href="#" class="hover:underline">My Files</a></li>
+          <li><a href="#" class="hover:underline">Recent Uploads</a></li>
+          <li><a href="#" class="hover:underline">Recent Searches</a></li>
+          <li><a href="/gpt/chat" class="hover:underline">Kunway GPT</a></li>
+        </ul>
+      </aside>
+      {% endif %}
+
+      <!-- Main Content -->
+      <main class="flex-1 flex flex-col px-4">
+        {% block content %}{% endblock %}
+      </main>
+    </div>
+
+
+    <!-- 
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbar">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbar">
+        <div class="navbar-nav">
+  
+          {% if user.is_authenticated %}
+          <a class="nav-item nav-link" id="home" href="/">Home</a>
+          <a class="nav-item nav-link" id="dashboard" href="/dashboard">Dashboard</a>
+  
+          <a class="nav-item nav-link" id="chat" href="/chat">Chat</a>
+          <a class="nav-item nav-link" id="note_page" href="/note">Note</a>
+          <a class="nav-item nav-link" id="logout" href="/auth/logout">Logout</a>
+          {% else %}
+          <a class="nav-item nav-link" id="home" href="/">Home</a>
+          <a class="nav-item nav-link" id="home" href="/">Features</a>
+          <a class="nav-item nav-link" id="home" href="/">About Us</a>
+          <a class="nav-item nav-link" id="home" href="/">Help & Support</a>
+  
+          <a class="nav-item nav-link" id="login" href="/auth/login">Login</a>
+          <a class="nav-item nav-link" id="signUp" href="/auth/sign-up">Sign Up</a>
+          {% endif %}
+        </div>
+      </div>
+    </nav> -->
+
+    <script src="{{ url_for('static', filename='script.js') }}"></script>
+
+
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+      integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+      crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+      integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+      crossorigin="anonymous"></script>
+
+    {% block javascript %}
+    <!-- <script type="text/javascript">
+      function deleteNote(noteId) {
+        fetch("/delete-note", {
+          method: "POST",
+          body: JSON.stringify({ noteId: noteId }),
+        }).then((_res) => {
+          window.location.href = "/note";
+        });
+      }
+      const menuButton = document.getElementById('menu-button');
+      const mobileMenu = document.getElementById('mobile-menu');
+  
+      menuButton.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+      });
+  
+    </script> -->
+    {% endblock %}
+    {{ dropzone.load_js()}}
+    {{ dropzone.config()}}
+  </div>
+</body>
+
+
+</html>

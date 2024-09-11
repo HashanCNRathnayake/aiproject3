@@ -1,0 +1,98 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<h1 class="text-2xl font-bold mb-4 text-center">Dashboard</h1>
+<p class="mb-6 text-center">Welcome to your dashboard!</p>
+
+<!-- Centered Search Bar and Filters -->
+<div class="flex justify-center mb-6">
+    <form action="{{ url_for('views.search_files') }}" method="get" class="w-full max-w-4xl">
+        <div class="flex flex-col md:flex-row md:justify-center mb-4">
+            <!-- Search Bar -->
+            <div class="flex-1 mb-4 md:mb-0 md:mr-4">
+                <label for="search-query" class="sr-only">Search Files</label>
+                <input type="text" name="query" id="search-query" placeholder="Search files..."
+                    class="w-full p-2 rounded bg-gray-700 text-white placeholder-gray-400">
+            </div>
+        </div>
+        <div class="flex flex-wrap md:flex-row md:justify-center md:space-x-4 mb-4">
+            <!-- Select Destination Folder -->
+            <div class="flex-1 mb-4 md:mb-0">
+                <label for="folder" class="sr-only">Select Destination Folder</label>
+                <select name="folder" id="folder" class="w-full p-2 rounded bg-gray-700 text-white">
+                    <option value="" disabled selected>Select Destination Folder</option>
+                    <option value="shared">Shared</option>
+                    <option value="archived">Archived</option>
+                    <option value="backup">Backup</option>
+                </select>
+            </div>
+
+            <!-- File Type -->
+            <div class="flex-1 mb-4 md:mb-0">
+                <label for="file-type" class="sr-only">Select File Type</label>
+                <select name="file_type" id="file-type" class="w-full p-2 rounded bg-gray-700 text-white">
+                    <option value="" disabled selected>Select File Type</option>
+                    <option value="application/pdf">PDF</option>
+                    <option value="image">Image</option>
+                    <option value="application/vnd.openxmlformats-officedocument.wordprocessingml.document">Word
+                    </option>
+                    <option value="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">Excel</option>
+                </select>
+            </div>
+
+            <!-- Uploaded Date -->
+            <div class="flex-1 mb-4 md:mb-0">
+                <label for="uploaded-date" class="sr-only">Uploaded Date</label>
+                <input type="date" name="uploaded_date" id="uploaded-date" placeholder="Uploaded Date"
+                    class="w-full p-2 rounded bg-gray-700 text-white">
+            </div>
+        </div>
+        <!-- Submit Button -->
+        <div class="flex justify-center">
+            <button type="submit" class="bg-blue-600 text-white p-2 rounded">Search</button>
+        </div>
+    </form>
+</div>
+
+<!-- File List -->
+<div class="bg-gray-900 p-4 rounded shadow-md">
+    <!-- Header Row -->
+    <div class="grid grid-cols-5 gap-4 text-gray-300 font-semibold mb-2">
+        <span>Name</span>
+        <span>Owner</span>
+        <span>Uploaded Date</span>
+        <span>Description</span>
+        <span>Actions</span>
+    </div>
+
+    {% if items %}
+    <!-- File Items -->
+    {% for item in items %}
+    <div class="grid grid-cols-5 gap-4 items-center border-b border-gray-700 py-2">
+        <a href="{{ url_for('views.view_file', file_id=item.id) }}" class="text-gray-400 hover:text-white">
+            <span>{{ item.name }}</span>
+        </a>
+        <span>{{ item.owner }}</span>
+        <span>{{ item.uploaded_date }}</span>
+        <span>{{ item.description }}</span>
+        <span aria-label="Add Action">
+            <svg class="w-6 h-6 inline cursor-pointer" fill="none" stroke="currentColor" viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg" onclick="showOptionsMenu('{{ item.id }}', '{{ item.description }}')">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6">
+                </path>
+            </svg>
+        </span>
+    </div>
+    {% endfor %}
+    {% else %}
+    <p class="text-gray-400">No files found.</p>
+    {% endif %}
+
+    <!-- Options Menu Container -->
+    <div id="options-menu-container"></div>
+
+</div>
+<script src="{{ url_for('static', filename='js/scripts.js') }}"></script>
+{% endblock %}
